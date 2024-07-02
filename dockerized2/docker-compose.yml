@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -8,7 +10,7 @@ services:
       - kafka-net
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: bitnami/kafka:latest
     depends_on:
       - zookeeper
     ports:
@@ -18,10 +20,12 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 60000
+      KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 60000
     networks:
       - kafka-net
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/9092"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -71,10 +75,10 @@ services:
     networks:
       - kafka-net
     healthcheck:
-     test: ["CMD-SHELL", "test -f /healthcheck"]
-     interval: 10s
-     timeout: 5s
-     retries: 5
+      test: ["CMD-SHELL", "test -f /healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   faust-app:
     build:
@@ -91,3 +95,4 @@ services:
 networks:
   kafka-net:
     driver: bridge
+    external: true

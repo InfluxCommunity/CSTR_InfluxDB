@@ -74,20 +74,25 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
         
         # Plotting
         plt.clf()
-        plt.subplot(2, 1, 1)
+        plt.subplot(3, 1, 1)
         plt.plot(t[:i + 1], sp[:i + 1], 'r--', label='Setpoint')
-        plt.plot(t[:i + 1], pv[:i + 1], 'b-', label='Process Variable')
-        plt.ylabel('Temperature CSTR')
+        plt.plot(t[:i + 1], pv[:i + 1], 'b-', label='Process Variable (Reactor Temp)')
+        plt.ylabel('Reactor Temperature (C)')
         plt.legend(loc='best')
 
-        plt.subplot(2, 1, 2)
-        plt.plot(t[:i + 1], op[:i + 1], 'k-', label='Control Output')
-        plt.ylabel('Temperature Reactor')
+        plt.subplot(3, 1, 2)
+        plt.plot(t[:i + 1], op[:i + 1], 'k-', label='Control Output (Cooling Jacket Temp)')
+        plt.ylabel('Cooling Jacket Temperature (C)')
+        plt.xlabel('Time (sec)')
+        plt.legend(loc='best')
+
+        plt.subplot(3, 1, 3)
+        plt.plot(t[:i + 1], Ca[:i + 1], 'g-', label='Concentration Ca')
+        plt.ylabel('Concentration Ca')
         plt.xlabel('Time (sec)')
         plt.legend(loc='best')
 
         plt.pause(0.01)
-
     op[len(t) - 1] = op[len(t) - 2]
     ie[len(t) - 1] = ie[len(t) - 2]
     P[len(t) - 1] = P[len(t) - 2]
