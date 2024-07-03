@@ -3,6 +3,7 @@ import logging
 import json
 import numpy as np
 from scipy.integrate import odeint
+from kafka import KafkaProducer
 
 class CSTRData(faust.Record, serializer='json'):
     Ca: float
@@ -43,7 +44,7 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
     sp = np.ones(len(t)) * T_ss
     for i in range(15):
         sp[i * 20:(i + 1) * 20] = 300 + i * 7.0
-    sp[300] = sp[299]
+    sp[299] = sp[298]
 
     for i in range(len(t) - 1):
         delta_t = t[i + 1] - t[i]
@@ -101,8 +102,10 @@ def cstr(x, t, u, Tf, Caf):
     UA = 5e4
     rA = k0 * np.exp(-EoverR / T) * Ca
 
-    dCadt = q / V (Caf - Ca) - rA
-    dTdt = q / V (Tf - T) + mdelH / (rho * Cp) * rA + UA / V / rho / Cp * (u - T)
+    dCadt = q / V * (Caf - Ca) - rA
+    dTdt = q / V * (Tf - T) \
+           + mdelH / (rho * Cp) * rA \
+           + UA / V / rho / Cp * (u - T)
 
     xdot = np.zeros(2)
     xdot[0] = dCadt
@@ -118,6 +121,7 @@ logger = logging.getLogger(__name__)
 
 # Function to send Tc value to Kafka
 def send_tc_to_kafka(tc_value):
+    logger.info(f"Sending Tc to Kafka: {tc_value}")
     producer = KafkaProducer(bootstrap_servers='kafka:9092', value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send('cstr_control', value={"Tc": tc_value})
     producer.flush()
