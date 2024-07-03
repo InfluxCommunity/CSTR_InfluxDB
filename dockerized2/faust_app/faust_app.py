@@ -3,7 +3,7 @@ import logging
 import json
 import numpy as np
 from scipy.integrate import odeint
-from kafka import KafkaProducer
+from kafka import KafkaProducer, KafkaConsumer
 
 class CSTRData(faust.Record, serializer='json'):
     Ca: float
@@ -17,6 +17,11 @@ tc_topic = app.topic('cstr_control')
 Kc = 4.61730615181 * 2.0
 tauI = 0.913444964569 / 4.0
 tauD = 0.0
+
+#Initialize the producer
+producer = KafkaProducer(bootstrap_servers='kafka:9092', value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+# Initialize Kafka consumer
+consumer = KafkaConsumer('cstr_data', bootstrap_servers='kafka:9092', value_deserializer=lambda m: json.loads(m.decode('utf-8')))
 
 # Control loop function
 def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
@@ -119,10 +124,10 @@ ie = 0
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # Function to send Tc value to Kafka
 def send_tc_to_kafka(tc_value):
     logger.info(f"Sending Tc to Kafka: {tc_value}")
-    producer = KafkaProducer(bootstrap_servers='kafka:9092', value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send('cstr_control', value={"Tc": tc_value})
     producer.flush()
 
