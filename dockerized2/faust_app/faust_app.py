@@ -199,11 +199,22 @@ if __name__ == "__main__":
     u_ss = 300.0
     T_ss = 324.475443431599
 
-    while True:
+    max_iterations = 301  
+    iteration = 0
+
+    while iteration < max_iterations:
+        iteration += 1
+
         Ca, T = receive_data_from_kafka()
         if Ca is not None and T is not None:
-            x0 = [Ca, T]
-            u, T = pid_control(T_ss, u_ss, t, 350, 1, x0)
-        else:
+        #     x0 = [Ca, T]
+        #     u, T = pid_control(T_ss, u_ss, t, 350, 1, x0)
+        # else:
             logger.error("No valid Ca and T values received, terminating loop")
             break
+
+    logger.info("Completed execution, exiting...")
+
+    # Close Kafka producer and consumer
+    producer.close()
+    consumer.close()

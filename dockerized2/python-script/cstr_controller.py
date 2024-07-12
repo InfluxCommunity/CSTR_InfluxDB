@@ -57,8 +57,12 @@ def send_data_to_kafka(ca, temp_reactor):
         producer.send('cstr_data', value=data)
         producer.flush()
         logger.info(f"Sent data to Kafka: {data}")
+        # Once the initial value is sent to Kafka, create a healthcheck file
+        if not os.path.isfile("/healthcheck"):
+            with open("/healthcheck", "w") as f:
+                f.write("healthcheck")
     else:
-        logger.error(f"Attempted to send NaN values to Kafka: Ca={ca}, Reactor_Temperature={temp_reactor}")
+        logger.error(f"Attempted to send values to Kafka: Ca={ca}, Reactor_Temperature={temp_reactor}")
 
 # Function to receive Tc from Kafka
 def receive_tc_from_kafka():
@@ -107,8 +111,8 @@ def simulate_cstr(u, Tf, Caf, x0, t):
         if tc is not None:
             u[i + 1] = tc
         else:
-            logger.error("No valid Tc value received, using previous value")
-            u[i + 1] = u[i]
+            logger.error("No valid Tc value received")
+            # u[i + 1] = u[i]
 
     return Ca, T
 
@@ -118,7 +122,12 @@ if __name__ == "__main__":
     x0 = [0.87725294608097, 324.475443431599]
     u_ss = 300.0
 
-    while True:
+    max_iterations = 301  # Adjust as needed
+    iteration = 0
+
+    while iteration < max_iterations:
+        iteration += 1
+
         # Initial Tc value
         initial_tc = 300.0
         u = np.ones(301) * initial_tc
@@ -128,3 +137,9 @@ if __name__ == "__main__":
 
         # Update x0 for the next iteration
         x0 = [Ca[-1], T[-1]]
+
+    logger.info("Completed execution, exiting...")
+
+    # Close Kafka producer and consumer
+    producer.close()
+    consumer.close()

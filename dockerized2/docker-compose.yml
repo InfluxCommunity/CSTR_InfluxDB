@@ -53,15 +53,15 @@ services:
     networks:
       - kafka-net
 
-  telegraf:
-    image: telegraf:latest
-    volumes:
-      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - kafka-net
+  # telegraf:
+  #   image: telegraf:latest
+  #   volumes:
+  #     - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #   networks:
+  #     - kafka-net
 
   python-script:
     build:
@@ -95,4 +95,3 @@ services:
 networks:
   kafka-net:
     driver: bridge
-    external: true
