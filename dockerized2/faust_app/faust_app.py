@@ -199,17 +199,23 @@ if __name__ == "__main__":
     u_ss = 300.0
     T_ss = 324.475443431599
 
-    max_iterations = 301  
+    max_iterations = 1 
     iteration = 0
 
     while iteration < max_iterations:
         iteration += 1
+        
+        logger.info(f"Iteration value: {iteration}")
 
         Ca, T = receive_data_from_kafka()
         if Ca is not None and T is not None:
-        #     x0 = [Ca, T]
-        #     u, T = pid_control(T_ss, u_ss, t, 350, 1, x0)
-        # else:
+            x0 = [Ca, T]
+            u, T = pid_control(T_ss, u_ss, t, 350, 1, x0)
+            
+            # Log the new values
+            logger.info(f"New Ca: {Ca}, New Reactor Temperature: {T}")
+
+        else:
             logger.error("No valid Ca and T values received, terminating loop")
             break
 

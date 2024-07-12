@@ -91,24 +91,28 @@ def receive_tc_from_kafka():
 
 # Simulation function
 def simulate_cstr(u, Tf, Caf, x0, t):
+    logger.info("Entered simulate_cstr function")
     Ca = np.ones(len(t)) * x0[0]
     T = np.ones(len(t)) * x0[1]
     for i in range(len(t) - 1):
         ts = [t[i], t[i + 1]]
+        logger.info(f"Calling odeint for iteration {i} with x0={x0}, u[i+1]={u[i+1]}, Tf={Tf}, Caf={Caf}")
         y = odeint(cstr, x0, ts, args=(u[i+1], Tf, Caf))
         Ca[i + 1] = y[-1][0]
         T[i + 1] = y[-1][1]
         x0[0] = Ca[i + 1]
         x0[1] = T[i + 1]
 
-        logger.debug(f"Iteration {i}: Ca={Ca[i + 1]}, T={T[i + 1]}")
+        logger.info(f"Iteration {i}: Ca={Ca[i + 1]}, T={T[i + 1]}, Tc={u[i+1]}")
         
         # Send data to Kafka
+        logger.info("Sending data to Kafka from simulate_cstr")
         send_data_to_kafka(Ca[i + 1], T[i + 1])
         
         # Receive Tc from Kafka
         tc = receive_tc_from_kafka()
         if tc is not None:
+            logger.info(f"Received new Tc: {tc}, updating u[i+1]")
             u[i + 1] = tc
         else:
             logger.error("No valid Tc value received")
@@ -122,18 +126,22 @@ if __name__ == "__main__":
     x0 = [0.87725294608097, 324.475443431599]
     u_ss = 300.0
 
-    max_iterations = 301  # Adjust as needed
+    max_iterations = 1  # Adjust as needed
     iteration = 0
 
     while iteration < max_iterations:
         iteration += 1
 
+        logger.info(f"Iteration value: {iteration}")
+
         # Initial Tc value
         initial_tc = 300.0
         u = np.ones(301) * initial_tc
 
+        logger.info("Starting simulation")
         # Run simulation
         Ca, T = simulate_cstr(u, 350, 1, x0, t)
+        logger.info("Simulation completed")
 
         # Update x0 for the next iteration
         x0 = [Ca[-1], T[-1]]
