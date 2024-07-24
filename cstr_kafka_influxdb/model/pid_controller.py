@@ -14,7 +14,7 @@ import numpy as np
 
 app = faust.App(
     'pid_controller',
-    broker='kafka://kafka:9092',
+    broker='cstr_kafka_influxdb-kafka-1://cstr_kafka_influxdb-kafka-1:9092',
     store='memory://',
     value_serializer='json',  # Use JSON serializer for structured data
     web_port=6067
