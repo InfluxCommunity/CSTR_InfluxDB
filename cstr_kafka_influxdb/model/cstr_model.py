@@ -5,7 +5,7 @@ from scipy.integrate import odeint
 
 app = faust.App(
     'cstr_model',
-    broker='cstr_kafka_influxdb-kafka-1://cstr_kafka_influxdb-kafka-1:9092',
+    broker='kafka://kafka:9092',
     store='memory://',
     value_serializer='json',
     web_port=6066

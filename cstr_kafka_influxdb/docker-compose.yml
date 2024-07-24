@@ -26,7 +26,7 @@ services:
       - '6066:6066'
       - '6067:6067'
     environment:
-      KAFKA_BROKER: 'cstr_kafka_influxdb-kafka-1:9092'
+      KAFKA_BROKER: 'kafka:9092'
     networks:
       - kafka-net
 
