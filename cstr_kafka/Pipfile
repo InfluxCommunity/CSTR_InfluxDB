@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+faust-streaming = "*"
+# Pin version due to https://github.com/faust-streaming/faust/issues/633
+aiokafka = '>=0.9.0,<0.11.0'
+numpy = "*"
+scipy = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

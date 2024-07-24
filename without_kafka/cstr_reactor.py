@@ -17,14 +17,8 @@ def cstr(x, t, u, Tf, Caf):
     rA = k0 * np.exp(-EoverR / T) * Ca
 
     dCadt = q / V * (Caf - Ca) - rA
-    dTdt = q / V * (Tf - T) \
-           + mdelH / (rho * Cp) * rA \
-           + UA / V / rho / Cp * (u - T)
-
-    xdot = np.zeros(2)
-    xdot[0] = dCadt
-    xdot[1] = dTdt
-    return xdot
+    dTdt = q / V * (Tf - T) + mdelH / (rho * Cp) * rA + UA / V / rho / Cp * (u - T)
+    return [dCadt, dTdt]
 
 
 def simulate_cstr(x0,ts,u,Tf,Caf):

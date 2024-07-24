@@ -5,21 +5,16 @@ from scipy.integrate import odeint
 
 
 # PID parameters and initial conditions
-Kc = 4.61730615181 * 2.0
-tauI = 0.913444964569 / 4.0
-tauD = 0.0
+Kc = 9.23461230362
+tauI = 0.22836124114
 
 # Control loop
 def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
-    u = np.ones(len(t)) * u_ss
     op = np.ones(len(t)) * u_ss
-    pv = np.zeros(len(t))
     e = np.zeros(len(t))
     ie = np.zeros(len(t))
-    dpv = np.zeros(len(t))
     P = np.zeros(len(t))
     I = np.zeros(len(t))
-    D = np.zeros(len(t))
 
     # Initialize Ca and T arrays
     Ca = np.ones(len(t)) * x0[0]
@@ -28,8 +23,6 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
     # Upper and Lower limits on OP
     op_hi = 350.0
     op_lo = 250.0
-
-    pv[0] = T_ss
 
     # Define the setpoint ramp or steps
     sp = np.ones(len(t)) * T_ss
@@ -43,39 +36,27 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
     plt.show()
 
     for i in range(len(t) - 1):
+        # i is current, i + 1 is future, i - 1 is past 
         delta_t = t[i + 1] - t[i]
-        e[i] = sp[i] - pv[i]
+        e[i] = sp[i] - T[i]
         if i >= 1:
-            dpv[i] = (pv[i] - pv[i - 1]) / delta_t
             ie[i] = ie[i - 1] + e[i] * delta_t
         P[i] = Kc * e[i]
         I[i] = Kc / tauI * ie[i]
-        D[i] = -Kc * tauD * dpv[i]
-        op[i] = op[0] + P[i] + I[i] + D[i]
+        op[i] = 300.0 + P[i] + I[i]
         if op[i] > op_hi:
             op[i] = op_hi
             ie[i] = ie[i] - e[i] * delta_t
         if op[i] < op_lo:
             op[i] = op_lo
             ie[i] = ie[i] - e[i] * delta_t
-        u[i + 1] = op[i] # this is the Cooling jacket value 
-
-        # Use the current Ca and T for the initial condition of the next step
-        # this original value is just CaF and Tf which is from the incoming stream.  
-        x0 = [Ca[i], T[i]] # these are the original values and we need to calculate the next
-        # Ca and T values with the simulate_cstr and bring them here with kafka
+ 
+        x0 = [Ca[i], T[i]] 
         ts = [t[i], t[i+1]]
-
-        # but basically this logic is in the other script and here we say 
-        # send x0, ts, u Tf Caf back to cstr_topic
-        # send back to pid_control topic ts and u[i+1]
-        y = simulate_cstr(x0,ts,u[i+1],Tf,Caf)
+        y = simulate_cstr(x0,ts,op[i],Tf,Caf)
         Ca[i + 1] = y[-1][0]
         T[i + 1] = y[-1][1]
-        # then pv i + 1 is calculated here so that the next u can be caluclculated 
-        pv[i + 1] = T[i + 1]
-
-
+        
 
         # # Debugging information
         # if i % 50 == 0:
@@ -85,7 +66,7 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
         plt.clf()
         plt.subplot(3, 1, 1)
         plt.plot(t[:i + 1], sp[:i + 1], 'r--', label='Setpoint')
-        plt.plot(t[:i + 1], pv[:i + 1], 'b-', label='Process Variable (Reactor Temp)')
+        plt.plot(t[:i + 1], T[:i + 1], 'b-', label='Process Variable (Reactor Temp)')
         plt.ylabel('Reactor Temperature (C)')
         plt.legend(loc='best')
 
@@ -109,7 +90,7 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
     D[len(t) - 1] = D[len(t) - 2]
 
     # Save data to file
-    data = np.vstack((t, u, T, Ca, op)).T
+    data = np.vstack((t, u, T, Ca, op, ie )).T
     np.savetxt('data_doublet_steps.txt', data, delimiter=',')
 
     plt.ioff()

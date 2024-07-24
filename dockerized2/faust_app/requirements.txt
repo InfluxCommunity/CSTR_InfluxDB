@@ -1,4 +1,0 @@
-faust
-numpy
-scipy
-kafka-python
