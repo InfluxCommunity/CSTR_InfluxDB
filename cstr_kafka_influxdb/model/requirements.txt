@@ -1,4 +1,7 @@
-faust-streaming
 numpy
 scipy
+# Due to some issues with the latest version of aiokafka, we are using a
+# specific version.
+faust-streaming==0.10.21
 aiokafka>=0.9.0,<0.11.0
+mode-streaming==0.3.5
