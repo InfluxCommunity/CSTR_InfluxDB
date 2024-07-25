@@ -18,14 +18,14 @@ pid_control_topic = app.topic('pid_control')
 # Initial Values
 process_count = 0
 max_iterations = 300
-# Tf and Caf are constant values of the feed. 
+# Tf and Caf are constant values of the feed.
 Tf = 350
 Caf = 1
-ts = [0,0.03333]  
+ts = [0,0.03333]
 initial_Ca = 0.87725294608097
 initial_T = 324.475443431599
 
-print("Running cstr_model script with unique ID: 12345")
+print("[model] Running cstr_model script with unique ID: 12345")
 
 
 def cstr_model_func(x, t, u, Tf, Caf):
@@ -58,39 +58,37 @@ async def cstr(cstr):
     async for Ca_T_values in cstr:
         Ca = Ca_T_values.get('Ca')
         T = Ca_T_values.get('T')
-        print(f"cstr func")
-        print(f"Received Ca cstr: {Ca}, T: {T}")
+        print(f"[model] cstr func")
+        print(f"[model] Received Ca cstr: {Ca}, T: {T}")
 
 @app.agent(pid_control_topic)
 async def consume_u(events):
     global process_count
-    print("Starting PID control loop")
+    print("[model] Starting PID control loop")
     initial_values = {
         'Ca': initial_Ca,
         'T': initial_T
     }
-    print(f"Sending initial values: Ca: {initial_Ca}, T: {initial_T}")
+    print(f"[model] Sending initial values: Ca: {initial_Ca}, T: {initial_T}")
     await cstr_topic.send(value=initial_values)
-    if not os.path.isfile("/healthcheck"):
-        with open("/healthcheck", "w") as f:
-            f.write("healthcheck")
 
     async for event in events:
+        print(f"[model] Received event: {event}")
         if process_count >= max_iterations:
             await app.stop()
             break
         u = event.get('u')
         Ca = event.get('Ca')
         T = event.get('T')
-        print(f"Into simulate_cstr u: {u}, Into simulate_cstr Ca: {Ca}, Into simulate_cstr T: {T}")
+        print(f"[model] Into simulate_cstr u: {u}, Into simulate_cstr Ca: {Ca}, Into simulate_cstr T: {T}")
         if u is not None and Ca is not None and T is not None:
             new_Ca, new_T = simulate_cstr(Ca, T, ts, u, Tf, Caf)
             new_values = {
                 'Ca': new_Ca,
                 'T': new_T,
             }
-            print(f"consume sent")
-            print(f"Received u: {u}, Computed new Ca: {new_Ca}, new T: {new_T}")
+            print(f"[model] consume sent")
+            print(f"[model] Received u: {u}, Computed new Ca: {new_Ca}, new T: {new_T}")
             await cstr_topic.send(value=new_values)
             process_count += 1
 
