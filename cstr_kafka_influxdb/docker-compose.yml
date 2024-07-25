@@ -35,8 +35,8 @@ services:
       context: ./model
       dockerfile: Dockerfile
     depends_on:
-      - kafka
- #       condition: service_healthy
+      kafka:
+        condition: service_healthy
     ports:
       - '6066:6066'
       - '6067:6067'
@@ -50,8 +50,8 @@ services:
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
-      - kafka
-        #condition: service_healthy
+      kafka:
+        condition: service_healthy
     networks:
       - kafka-net
 
