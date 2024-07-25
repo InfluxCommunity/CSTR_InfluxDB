@@ -7,7 +7,7 @@ import os
 
 app = faust.App(
     'pid_controller',
-    broker='kafka://localhost:9092',
+    broker='kafka://kafka:9092',
     store='memory://',
     value_serializer='json',  
     web_port=6067
