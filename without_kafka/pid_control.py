@@ -58,7 +58,7 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
         T[i + 1] = y[-1][1]
         
 
-        # # Debugging information
+        # Debugging information
         # if i % 50 == 0:
         #     print(f"Time: {t[i]:.2f}, Setpoint: {sp[i]:.2f}, PV: {pv[i]:.2f}, OP: {op[i]:.2f}, Ca: {Ca[i]:.2f}, T: {T[i]:.2f}")
         
@@ -87,7 +87,6 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
     ie[len(t) - 1] = ie[len(t) - 2]
     P[len(t) - 1] = P[len(t) - 2]
     I[len(t) - 1] = I[len(t) - 2]
-    D[len(t) - 1] = D[len(t) - 2]
 
     # Save data to file
     data = np.vstack((t, u, T, Ca, op, ie )).T

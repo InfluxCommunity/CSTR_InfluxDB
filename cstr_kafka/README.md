@@ -30,6 +30,20 @@ Run the cstr-model first.
     exit
     ```
 
+### Visualize the output 
+To visualize the output you can: 
+1. Exec into the kafka container and tail the topic:
+    ```
+    docker exec -it cstr-influx-kafka-1 /bin/sh
+    /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic pid_control --from-beginning
+    ```
+2. Copy the output into a file OR use the existing file [output_pid_cotrol_topic_raw.txt](output_pid_cotrol_topic_raw.txt). 
+   
+3. Finally run `[visualize_output_from_topic.py](visualize_output_from_topic.py) will output the values in a json and create a visualization of the values. 
+
+![cstr_kafka](../img/cstr_kafka.png) 
+
+
 ## Useful Commands
 To delete topics:
 ```
@@ -60,3 +74,4 @@ Tail the topics:
 
 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic pid_control --from-beginning
 ```
+

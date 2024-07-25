@@ -33,8 +33,9 @@ This directory contains an example of how to model the CSTR without InfluxDB, ka
 
 `data_doublet_steps.txt` contains the output from `cstr_model.py` and `pid_control.py`. 
 
-`without_kafka/cstr_reactor.py` is the basis for `cstr_kafka_influxdb/cstr/cstr_model.py`.
-`without_kafka/pid_control.py` is the basis for `cstr_kafka_influxdb/pid_control/pid_controller.py`
+[without_kafka/cstr_reactor.py](without_kafka/cstr_reactor.py) is the basis for [cstr_kafka_influxdb/cstr/cstr_model.py](cstr_kafka_influxdb/cstr/cstr_model.py).
+[without_kafka/pid_control.py](without_kafka/pid_control.py) is the basis for [cstr_kafka_influxdb/pid_control/pid_controller.py](cstr_kafka_influxdb/pid_control/pid_controller.py)
+
 
 ### cstr_kafka
 This directory contains an example of how to model a CSTR with just kafka. 
