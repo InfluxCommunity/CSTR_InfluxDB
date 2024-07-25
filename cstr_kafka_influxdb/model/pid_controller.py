@@ -1,22 +1,15 @@
-#Things to fix:
-# Don't understand how the correct values are being produces
-# The first Ca and T values to be sent shouln't be the Caf and Tf but rather 
-# 0.87725294608097, 324.475443431599 respectively 
-# I'm not getting the correct u or op after first iteration it should be 300
-# Received Ca: 0.87725294608097, T: 324.475443431599, Computed u: 40.990300358678404, Setpoint: 300.0, IE: -0.8157665295751942 
-# However op[i] should be 250
-
 import faust
 import logging
 import json
 import numpy as np
+import os
 
 
 app = faust.App(
     'pid_controller',
-    broker='kafka://kafka:9092',
+    broker='kafka://localhost:9092',
     store='memory://',
-    value_serializer='json',  # Use JSON serializer for structured data
+    value_serializer='json',  
     web_port=6067
 )
 
@@ -120,9 +113,6 @@ async def process_cstr_events(events):
             }
             print(f"Received Ca: {ca_current}, T: {t_current}, Computed u: {u}, Setpoint: {sp}, IE: {ie_current}")
             await pid_control_topic.send(value=control_message)
-            if not os.path.isfile("/healthcheck"):
-                with open("/healthcheck", "w") as f:
-                    f.write("healthcheck")
             T_previous = t_current  # Update the previous temperature value
             ie_previous = ie_current  # Update the previous error value
 

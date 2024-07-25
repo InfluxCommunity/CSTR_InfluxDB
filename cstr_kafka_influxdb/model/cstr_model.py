@@ -1,6 +1,7 @@
 import faust
 import numpy as np
 from scipy.integrate import odeint
+import os
 
 
 app = faust.App(

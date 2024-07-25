@@ -47,7 +47,7 @@ To visualize the output you can:
 ## Useful Commands
 To delete topics:
 ```
-docker exec -it cstr-influx-kafka-1 /bin/sh
+docker exec -it cstr_kafka_influxdb-kafka-1 /bin/sh
 
 /opt/kafka/bin/kafka-topics.sh --delete --topic cstr --bootstrap-server localhost:9092
 
@@ -70,8 +70,8 @@ faust -A cstr_model  worker -l info
 
 Tail the topics:
 ```
-/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic cstr --from-beginning
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic cstr --from-beginning
 
-/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic pid_control --from-beginning
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic pid_control --from-beginning
 ```
 
