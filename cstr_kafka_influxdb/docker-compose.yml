@@ -11,7 +11,7 @@ services:
     networks:
       - kafka-net
     healthcheck:
-     test: ["CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server kafka:9092 || exit 1"]
+     test: ["CMD-SHELL", "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 || exit 1"]
      interval: 10s
      timeout: 10s
      retries: 10
@@ -30,8 +30,6 @@ services:
       KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-
-
 
   combined_service:
     build:
