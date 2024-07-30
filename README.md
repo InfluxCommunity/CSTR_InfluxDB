@@ -2,7 +2,7 @@
 
 This project models a continous stirred tank reactor (CSTR), a common type of reactor used in chemical engineering. It is widely used in industrial processes due to its simplicity and ability to handle continuous reactions. It highlights how to leverage InfluxDB, Telegraf, Kafka, faust-streaming, and docker to build a scalable digital twin. 
 
-![alt text](img/cstr.png) 
+![cstr diagram](img/cstr.png) 
 
 ### Inlet Stream (Tf, CAf):
 Tf: This represents the temperature of the feed entering the reactor.
@@ -33,13 +33,13 @@ This directory contains an example of how to model the CSTR without InfluxDB, ka
 
 `data_doublet_steps.txt` contains the output from `cstr_model.py` and `pid_control.py`. 
 
-[without_kafka/cstr_reactor.py](without_kafka/cstr_reactor.py) is the basis for [cstr_kafka_influxdb/cstr/cstr_model.py](cstr_kafka_influxdb/cstr/cstr_model.py).
-[without_kafka/pid_control.py](without_kafka/pid_control.py) is the basis for [cstr_kafka_influxdb/pid_control/pid_controller.py](cstr_kafka_influxdb/pid_control/pid_controller.py)
+[without_kafka/cstr_reactor.py](without_kafka/cstr_reactor.py) is the basis for [cstr_kafka_influxdb/cstr_model.py](cstr_kafka_influxdb/cstr_model.py).
+[without_kafka/pid_control.py](without_kafka/pid_control.py) is the basis for [cstr_kafka_influxdb/pid_controller.py](cstr_kafka_influxdb/pid_controller.py)
 
-
-### cstr_kafka
-This directory contains an example of how to model a CSTR with just kafka. 
 
 ### cstr_kafka_influxdb
-This directory contians a fully dockerized example with kafka, InfluxDB, Telegraf to produce a scalable digital twin. 
+This directory contains an example of how to model a CSTR with just kafka. 
+
+### cstr_kafka_influxdb_docker
+This directory contians a fully dockerized example with kafka, InfluxDB, Telegraf to produce a scalable digital twin. This aims to illustrate how you could monitor several CSTRs and scale out, assuming each CSTR wrote to a different partition. This is a WIP. 
 
