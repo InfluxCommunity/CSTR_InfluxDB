@@ -90,7 +90,7 @@ def pid_control(T_ss, u_ss, t, Tf, Caf, x0):
 
     # Save data to file
     data = np.vstack((t, u, T, Ca, op, ie )).T
-    np.savetxt('data_doublet_steps.txt', data, delimiter=',')
+    np.savetxt('cstr_output.txt', data, delimiter=',')
 
     plt.ioff()
     plt.show()

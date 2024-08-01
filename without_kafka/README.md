@@ -20,5 +20,6 @@ This directory contains an example of how to model a CSTR with Python.
     ```
 
 ## Visualize the output:
-You should see the following visualizatiobn:
+You should see the following visualization:
 ![without_kafka](../img/without_kafka.png) 
+
