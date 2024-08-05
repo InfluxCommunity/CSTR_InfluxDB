@@ -1,5 +1,5 @@
-# cstr_kafka 
-This directory contains an example of how to model a CSTR with just kafka. 
+# cstr_kafka_ 
+This directory contains an example of how to model a CSTR with just kafka and InfluxDB 
 
 ## Run 
 1. Start the docker container. Pull this repo, cd into this directory, and run:
@@ -12,6 +12,7 @@ This directory contains an example of how to model a CSTR with just kafka.
     cd telegraf 
     telegraf --config telegraf.conf
     ```
+
 3. Create a python env and activate it:
     ```
     pipenv install
@@ -19,7 +20,14 @@ This directory contains an example of how to model a CSTR with just kafka.
     ```
 You'll want to create two shells. 
 
-1. Run the apps:
+4. Create the topics:
+   ```
+   docker exec -it cstr_kafka_influxdb-kafka-1 /bin/sh
+   /opt/kafka/bin/kafka-topics.sh --delete --topic cstr --bootstrap-server localhost:9092
+   /opt/kafka/bin/kafka-topics.sh --delete --topic pid_control --bootstrap-server localhost:9092
+   ```
+
+5. Run the apps:
     ```
     faust -A cstr_model  worker -l info
     faust -A pid_controller worker -l info

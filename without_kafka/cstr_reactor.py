@@ -25,7 +25,3 @@ def simulate_cstr(x0,ts,u,Tf,Caf):
     y = odeint(cstr, x0, ts, args=(u, Tf, Caf))  # Use u[i + 1]
     return y 
 
-
-# goal produce Ca and T values here 
-# and then send them to PID_control function
-# and the PID function calculates the u or T cooling jacket 

@@ -29,6 +29,17 @@ services:
       KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+  
+  kafka-init:
+    image: 'bitnami/kafka:latest'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-net
+    entrypoint: ["/bin/sh", "-c", "sleep 20 && /app/initialize_kafka.sh"] # Adjust sleep time as needed
+    volumes:
+      - ./initialize_kafka.sh:/app/initialize_kafka.sh
 
   combined_service:
     build:
