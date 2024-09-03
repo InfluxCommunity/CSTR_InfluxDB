@@ -41,5 +41,5 @@ This directory contains an example of how to model the CSTR without InfluxDB, ka
 This directory contains an example of how to model a CSTR with just kafka. 
 
 ### cstr_kafka_influxdb_docker
-This directory contians a fully dockerized example with kafka, InfluxDB, Telegraf to produce a scalable digital twin. This aims to illustrate how you could monitor several CSTRs and scale out, assuming each CSTR wrote to a different partition. This is a WIP. 
+This directory contians a fully dockerized example with kafka, InfluxDB, Telegraf to produce a scalable digital twin. This aims to illustrate how you could monitor several CSTRs and scale out, assuming each CSTR wrote to a different partition. 
 
